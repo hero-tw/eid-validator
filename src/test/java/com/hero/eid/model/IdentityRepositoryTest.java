@@ -1,5 +1,8 @@
 package com.hero.eid.model;
 
+import java.util.List;
+import javax.persistence.Id;
+
 import com.hero.eid.Config;
 import com.hero.eid.EIDValidatorApplication;
 import org.junit.Test;
@@ -11,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = EIDValidatorApplication.class)
@@ -36,7 +40,25 @@ public class IdentityRepositoryTest {
 
         Identity read = repository.findById(stored.getId()).get();
         assertEquals(stored.toString(), read.toString());
+    }
 
+    @Test
+    public void shouldFindSimpleNameMatch(){
+        Identity i = new Identity()
+                .name(new Name()
+                    .givenName("John")
+                        .secondaryName("Thomas")
+                        .surname("Doe")
+                );
+        i = repository.persist(i);
+
+        Identity query = new Identity()
+                .name(new Name()
+                        .givenName("John")
+                        .surname("Doe"));
+
+        List<Identity> results = repository.findMatchingValues(query);
+        assertEquals(1, results.size());
     }
 
 }
