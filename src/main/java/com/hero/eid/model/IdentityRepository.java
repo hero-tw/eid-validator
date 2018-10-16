@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 
-git package com.hero.eid.model;
+package com.hero.eid.model;
 
 @Repository
 @Transactional
