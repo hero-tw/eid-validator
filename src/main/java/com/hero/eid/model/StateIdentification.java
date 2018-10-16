@@ -18,6 +18,42 @@ public class StateIdentification {
     private String number;
     private LocalDate expiration;
 
+    public String getId() {
+        return id;
+    }
+
+    public StateIdentification id(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getIssuer() {
+        return issuer;
+    }
+
+    public StateIdentification issuer(String issuer) {
+        this.issuer = issuer;
+        return this;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public StateIdentification number(String number) {
+        this.number = number;
+        return this;
+    }
+
+    public LocalDate getExpiration() {
+        return expiration;
+    }
+
+    public StateIdentification expiration(LocalDate expiration) {
+        this.expiration = expiration;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

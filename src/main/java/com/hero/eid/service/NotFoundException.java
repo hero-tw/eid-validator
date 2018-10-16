@@ -1,4 +1,4 @@
 package com.hero.eid.service;
 
-public class NotFoundException {
+public class NotFoundException extends RuntimeException {
 }
