@@ -1,0 +1,257 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+buildscript {
+	ext {
+		springBootVersion = '2.0.5.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0')
+		classpath('org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config:2.0.0.RELEASE')
+		classpath("org.springframework.boot:spring-boot-starter-actuator:2.0.5.RELEASE")
+	}
+
+}
+plugins {
+	id "net.foragerr.jmeter" version "1.0.10-3.3"
+	id 'com.github.eerohele.saxon-gradle' version '0.6.0'
+}
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.palantir.docker'
+apply plugin: 'jacoco'
+apply plugin: 'findbugs'
+
+group = 'com.hero'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+def jmeterServer = "localhost"
+def sshForward = null
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	springCloudVersion = 'Finchley.SR1'
+}
+
+dependencies {
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation('org.springframework.cloud:spring-cloud-starter-config')
+
+	implementation("org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+bootJar {
+	classifier = 'boot'
+}
+
+docker {
+	name "${project.group}/${bootJar.baseName}"
+	files new File(project.buildDir, "libs/$project.name-$project.version-boot.jar")
+	//copySpec.from(tasks.unpack.outputs).into("dependency")
+	buildArgs(['JAR': "$project.name-$project.version-boot.jar"])
+}
+
+jacoco {
+	toolVersion = "0.8.1"
+}
+
+jacocoTestReport {
+	group = "Reporting"
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.enabled true
+	}
+}
+
+
+tasks.withType(FindBugs) {
+	reports {
+		xml.enabled false
+		html.enabled true
+	}
+}
+findbugsMain.ignoreFailures false
+findbugsTest.ignoreFailures false
+
+
+tasks.clean.dependsOn(tasks.dockerClean)
+tasks.docker.dependsOn(tasks.bootJar)
+tasks.check.finalizedBy(tasks.jacocoTestReport)
+
+def rmiKeystore = new File(project.rootDir, "src/test/jmeter/rmi_keystore.jks").getAbsolutePath()
+
+jmeter {
+	jmTestFiles = [file("src/test/jmeter/perf1.jmx")]
+	jmSystemPropertiesFiles = [file("src/test/jmeter/user.properties")]
+	//resultsLog = new File(project.buildDir, "jmeter-report/loadtest-results.xml")
+	csvLogFile = false
+	//jmUserProperties = ["hostname=blog.coop.software"]
+	jmGlobalProperties = ["hostname=blog.coop.software"]
+	jmSystemProperties = ["-Djava.rmi.server.hostname=127.0.0.1",
+						  "-Dserver.rmi.ssl.keystore.password=changeit",
+						  "-Dserver.rmi.ssl.keystore.file=$rmiKeystore",
+						  "-Dserver.rmi.ssl.truststore.file=$rmiKeystore",
+						  "-Dlog4j2.loggerContextFactory=org.apache.logging.log4j.simple.SimpleLoggerContextFactory"]
+	remote = true
+	jmLog = new File(project.buildDir, "jmeter.log")
+}
+
+xslt {
+	stylesheet file('src/test/jmeter/template.xslt')
+
+	// Transform every .xml file in the "input" directory.
+	input fileTree(dir: new File(project.buildDir, "jmeter-report").getAbsolutePath(), include: '*.xml')
+
+}
+
+task moveXsltFiles(type:Copy) {
+	from  fileTree(dir: project.buildDir, include: '*.html')
+	into "${buildDir}/reports/jmeter"
+}
+
+tasks.xslt.finalizedBy(tasks.moveXsltFiles)
+
+void configureEnv(ProcessBuilder pb){
+	String runName = "performance-" +
+			java.util.Optional.ofNullable(System.getenv("BUILD_NUMBER"))
+					.orElse("LOCAL")
+
+	pb.environment().put("AWS_ACCESS_KEY_ID", System.getenv("AWS_ACCESS_KEY_ID"))
+	pb.environment().put("AWS_SECRET_ACCESS_KEY", System.getenv("AWS_SECRET_ACCESS_KEY"))
+	pb.environment().put("TF_VAR_run_name", runName)
+	pb.environment().put("TF_VAR_access_key", System.getenv("AWS_ACCESS_KEY_ID"))
+	pb.environment().put("TF_VAR_secret_key", System.getenv("AWS_SECRET_ACCESS_KEY"))
+}
+
+task spinUpJMeter() {
+	group "Performance"
+	logging.captureStandardOutput LogLevel.LIFECYCLE
+	doFirst {
+
+		ProcessBuilder pb = null
+
+		if (!new File(project.rootDir, "etc/perf/.terraform").exists()) {
+			logger.lifecycle("Intializing terraform")
+		pb = new ProcessBuilder()
+		configureEnv(pb)
+		logger.lifecycle(pb.environment().toString())
+		pb.command("/usr/local/bin/terraform", "init")
+				.directory(new File(project.rootDir, "etc/perf"))
+				.redirectOutput(output)
+				.redirectError(error)
+				.start()
+				.waitFor()
+		}
+
+		logger.lifecycle("Running plan")
+		pb = new ProcessBuilder()
+		configureEnv(pb)
+		File output = new File(project.buildDir, "perf.create.log")
+		File error = new File(project.buildDir, "perf.create.error.log")
+		logger.lifecycle(pb.environment().toString())
+		pb.command("/usr/local/bin/terraform", "plan","-lock=false")
+				.directory(new File(project.rootDir, "etc/perf"))
+		        .redirectOutput(output)
+				.redirectError(error)
+				.start()
+				.waitFor()
+
+		pb = new ProcessBuilder()
+		configureEnv(pb)
+		Process apply = pb.command("/usr/local/bin/terraform", "apply", "-auto-approve", "-lock=false")
+				.directory(new File(project.rootDir, "etc/perf"))
+				.redirectOutput(output)
+				.redirectError(error)
+				.start()
+		new ProcessBuilder().command("tail", "-f", output.getAbsolutePath()).inheritIO().start()
+
+		int result = apply.waitFor()
+
+		logger.info(error.text)
+
+		Pattern pattern = Pattern.compile(".*slave_1_public = (.*\\.compute-1\\.amazonaws\\.com).*")
+		boolean match = false
+		for (String line : output.readLines()) {
+			Matcher m = pattern.matcher(line)
+			match = m.matches()
+			if (match) {
+				jmeterServer = m.group(1)
+				break
+			}
+		}
+		if(!match){
+			logger.lifecycle("FAILRED TO SPIN UP JMETER")
+			logger.lifecycle(output.text)
+			logger.lifecycle(error.text)
+		}
+		logger.lifecycle("Deployed to $jmeterServer")
+
+		assert result == 0: "terraform apply failed with return code " + result
+		new ProcessBuilder().command("chmod", "600", new File(project.rootDir, "etc/perf/jmeter.prv").getAbsolutePath())
+				.inheritIO()
+				.start()
+				.waitFor()
+		sshForward = new ProcessBuilder()
+				.command("ssh",
+				"-o", "StrictHostKeyChecking no",
+				"-L", "55501:127.0.0.1:55501",
+				"-L", "55511:127.0.0.1:55511",
+				"-R", "55512:127.0.0.1:55512",
+				"-i",
+				new File(project.rootDir, "etc/perf/jmeter.prv").getAbsolutePath(),
+				"ubuntu@$jmeterServer",
+				"-N")
+				.redirectOutput(new File(project.buildDir, "ssh.log"))
+				.redirectError(new File(project.buildDir, "ssh.log"))
+				.start()
+		sleep(500)
+	}
+}
+
+
+task tearDownJMeter() {
+	group "Performance"
+	doFirst {
+		ProcessBuilder pb = new ProcessBuilder()
+		configureEnv(pb)
+		if (sshForward != null) {
+			sshForward.destroy()
+		}
+		int result = pb.command("/usr/local/bin/terraform", "destroy", "-auto-approve")
+				.inheritIO()
+				.directory(new File(project.rootDir, "etc/perf"))
+				.start()
+				.waitFor()
+		logger.lifecycle("TF Destroy: $result")
+		assert result == 0: "terraform destroys failed with return code " + result
+
+	}
+}
+
+tasks.jmRun.dependsOn(tasks.spinUpJMeter)
+tasks.jmRun.finalizedBy(tasks.tearDownJMeter)
