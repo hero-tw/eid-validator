@@ -1,18 +1,17 @@
-package com.hero.demo;
+package com.hero.eid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@RestController
+@ComponentScan(basePackages = "com.hero")
 public class EIDValidatorApplication {
 
 
 	@Autowired
-	ConfigurableEnvironment env;
+	private Config config;
 
 
 	public static void main(String[] args) {
