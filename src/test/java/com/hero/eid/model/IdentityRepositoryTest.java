@@ -1,5 +1,7 @@
 package com.hero.eid.model;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import javax.persistence.Id;
 
@@ -59,6 +61,22 @@ public class IdentityRepositoryTest {
 
         List<Identity> results = repository.findMatchingValues(query);
         assertEquals(1, results.size());
+        assertEquals(i.toString(), results.get(0).toString());
+    }
+
+    @Test
+    public void shouldFindDOBMatch(){
+        Identity i = new Identity()
+               .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 02));
+
+        i = repository.persist(i);
+
+        Identity query = new Identity()
+                .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 02));
+
+        List<Identity> results = repository.findMatchingValues(query);
+        assertEquals(1, results.size());
+        assertEquals(i.toString(), results.get(0).toString());
     }
 
 }

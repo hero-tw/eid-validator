@@ -1,5 +1,6 @@
 package com.hero.eid.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,8 +59,8 @@ public class IdentityRepository {
                 );
         Query q = entityManager.createQuery(query);
         q.setMaxResults(10);
-        //noinspection unchecked
-        return (List<Identity>) q.getResultList();
+        //noinspection unchecked,ResultOfMethodCallIgnored
+        return ((List<Identity>)q.getResultList()).stream().peek(Identity::toString).collect(Collectors.toList());
     }
 
     private Predicate[] collapse(List<Optional<Predicate>> predicates){
