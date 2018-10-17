@@ -56,6 +56,19 @@ pipeline {
             sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./deploy.sh'
         }
     }
+
+    stage('Security') {
+        script {
+            try {
+                sh './gradlew dependencyCheckAnalyze'
+            } finally {
+                publishHTML(target: [reportDir:'build/reports/dependency-check',
+                                        reportFiles: 'dependency-check-report.html'
+                                        reportName: 'Dependency Report', keepAll: true])
+            }
+        }
+    }
+
     stage('Performance') {
            steps {
                script {

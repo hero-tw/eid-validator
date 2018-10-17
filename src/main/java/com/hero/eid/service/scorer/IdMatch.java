@@ -14,6 +14,8 @@ import com.hero.eid.model.StateIdentification;
 import com.hero.eid.service.Score;
 import com.hero.eid.service.Scorer;
 
+import static com.hero.eid.service.scorer.ScorerUtil.anyNull;
+
 public class IdMatch implements Scorer {
 
 
@@ -28,7 +30,7 @@ public class IdMatch implements Scorer {
         for(String issuer : allTypes) {
             StateIdentification qid = queryByIssuer.get(issuer);
             StateIdentification mid = matchByIssuer.get(issuer);
-            if(mid == null || qid == null){
+            if(anyNull(qid, mid)){
                 continue;
             }
             if(Objects.equals(qid.getNumber(), mid.getNumber()) &&

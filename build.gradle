@@ -1,5 +1,6 @@
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import java.util.Optional as Opt
 
 buildscript {
 	ext {
@@ -19,6 +20,7 @@ buildscript {
 		classpath('org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config:2.0.0.RELEASE')
 		classpath("org.springframework.boot:spring-boot-starter-actuator:2.0.5.RELEASE")
 		classpath('org.projectlombok:lombok:1.18.2')
+		classpath('org.owasp:dependency-check-gradle:3.3.2')
 	}
 
 }
@@ -29,6 +31,7 @@ plugins {
 }
 
 ext['mockito.version'] = '2.19.1'
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -37,6 +40,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.palantir.docker'
 apply plugin: 'jacoco'
 apply plugin: 'findbugs'
+apply plugin: 'org.owasp.dependencycheck'
 
 group = 'com.hero'
 version = '0.0.1-SNAPSHOT'
@@ -67,8 +71,9 @@ dependencies {
 	compileOnly('org.projectlombok:lombok:1.18.2')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('org.apache.derby:derby:10.14.2.0')
-
-
+	
+	//Transitive dependency clobbers for security updates:
+	implementation('com.google.protobuf:protobuf-java:jar:2.6.1')
 }
 
 
@@ -79,6 +84,11 @@ dependencyManagement {
 	}
 }
 
+
+dependencyCheck{
+	suppressionFile = file("$project.rootDir/etc/dependency-check-surpression.xml")
+	outputDirectory = file("$project.buildDir/reports/dependency-check")
+}
 bootRun {
 	jvmArgs = ["-Dspring.profiles.active=local"]
 }
@@ -92,9 +102,9 @@ docker {
 	files new File(project.buildDir, "libs/$project.name-$project.version-boot.jar")
 	buildArgs(
 			['JAR': "$project.name-$project.version-boot.jar",
-			 'DATABASE_HOST': java.util.Optional.ofNullable(System.getenv("EID_DATABASE_HOST")).orElse(""),
-			 'DATABASE_USER': java.util.Optional.ofNullable(System.getenv("EID_DATABASE_USER")).orElse(""),
-			 'DATABASE_PASSWORD': java.util.Optional.ofNullable(System.getenv("EID_DATABASE_PASSWORD")).orElse("")
+			 'DATABASE_HOST': Opt.ofNullable(System.getenv("EID_DATABASE_HOST")).orElse(""),
+			 'DATABASE_USER': Opt.ofNullable(System.getenv("EID_DATABASE_USER")).orElse(""),
+			 'DATABASE_PASSWORD': Opt.ofNullable(System.getenv("EID_DATABASE_PASSWORD")).orElse("")
 			])
 }
 
@@ -163,7 +173,7 @@ tasks.xslt.finalizedBy(tasks.moveXsltFiles)
 
 void configureEnv(ProcessBuilder pb){
 	String runName = "performance-" +
-			java.util.Optional.ofNullable(System.getenv("BUILD_NUMBER"))
+			Opt.ofNullable(System.getenv("BUILD_NUMBER"))
 					.orElse("LOCAL")
 
 	pb.environment().put("AWS_ACCESS_KEY_ID", System.getenv("AWS_ACCESS_KEY_ID"))

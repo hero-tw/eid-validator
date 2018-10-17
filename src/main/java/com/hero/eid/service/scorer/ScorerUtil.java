@@ -31,4 +31,13 @@ public class ScorerUtil {
                 .map(q-> match == null ||  q.equals(match))
                 .orElse(true);
     }
+
+    public static boolean anyNull(Object... values){
+        for(Object o : values){
+            if(o == null){
+                return true;
+            }
+        }
+        return false;
+    }
 }
