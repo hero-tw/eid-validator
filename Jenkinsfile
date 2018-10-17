@@ -60,10 +60,10 @@ pipeline {
     stage('Security') {
         script {
             try {
-                sh './gradlew dependencyCheckAnalyze'
+                sh './gradlew dependencyCheckUpdate dependencyCheckAnalyze'
             } finally {
                 publishHTML(target: [reportDir:'build/reports/dependency-check',
-                                        reportFiles: 'dependency-check-report.html'
+                                        reportFiles: 'dependency-check-report.html',
                                         reportName: 'Dependency Report', keepAll: true])
             }
         }
