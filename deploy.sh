@@ -13,8 +13,8 @@ SERVICE_NAME=${REPOSITORY_NAME}-service
 
 REPOSITORY_URI=`aws ecr describe-repositories --repository-names ${REPOSITORY_NAME} --region ${REGION} | jq .repositories[].repositoryUri | tr -d '"'`
 
-docker tag com.hero/demo:latest ${REPOSITORY_URI}:latest
-docker tag com.hero/demo:latest ${REPOSITORY_URI}:${BUILD_NUMBER}
+docker tag com.hero/eid:latest ${REPOSITORY_URI}:latest
+docker tag com.hero/eid:latest ${REPOSITORY_URI}:${BUILD_NUMBER}
 docker push ${REPOSITORY_URI}:latest
 docker push ${REPOSITORY_URI}:${BUILD_NUMBER}
 
