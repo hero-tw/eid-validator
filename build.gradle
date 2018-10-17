@@ -90,9 +90,15 @@ bootJar {
 docker {
 	name "${project.group}/${bootJar.baseName}"
 	files new File(project.buildDir, "libs/$project.name-$project.version-boot.jar")
-	//copySpec.from(tasks.unpack.outputs).into("dependency")
-	buildArgs(['JAR': "$project.name-$project.version-boot.jar"])
+	buildArgs(
+			['JAR': "$project.name-$project.version-boot.jar",
+			 'DATABASE_HOST': System.getenv("EID_DATABASE_HOST"),
+			 'DATABASE_USER': System.getenv("EID_DATABASE_USER"),
+			 'DATABASE_PASSWORD': System.getenv("EID_DATABASE_PASSWORD")
+			])
 }
+
+
 
 jacoco {
 	toolVersion = "0.8.1"

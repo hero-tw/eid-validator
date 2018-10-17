@@ -6,9 +6,10 @@ pipeline {
   }
   environment {
     AWS_KEY = credentials('aws-keys')
+    EID_DATABASE_KEY = credentials('EID_DATABASE')
+    EID_DATABASE_HOST = credential('EID_DATABASE_HOST')
   }
   stages {
-
     stage('Init') {
         steps {
             checkout scm
@@ -46,7 +47,7 @@ pipeline {
 
     stage('Dockerize') {
         steps {
-            sh './gradlew docker'
+            sh 'EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW./gradlew docker'
         }
     }
 
