@@ -7,7 +7,7 @@ pipeline {
   environment {
     AWS_KEY = credentials('aws-keys')
     EID_DATABASE_KEY = credentials('EID_DATABASE')
-    EID_DATABASE_HOST = credential('EID_DATABASE_HOST')
+    EID_DATABASE_HOST = credentials('EID_DATABASE_HOST')
   }
   stages {
     stage('Init') {
