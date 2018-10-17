@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.hero.eid.model.Identity;
 import com.hero.eid.model.IdentityRepository;
@@ -45,12 +46,17 @@ public class QueryController {
 
     @PostMapping
     public QueryResult findByValues(@RequestBody Identity query){
-        Identity match =repo.findMatchingValues(query)
+        List<QueryResult> match =repo.findMatchingValues(query)
                .stream()
-                .max(compareIdentities(query))
-                .orElseThrow(NotFoundException::new);
+                .map(i-> new QueryResult(score(query, i), i))
+                .sorted(Comparator.comparingInt(QueryResult::getScore).reversed())
+                .collect(Collectors.toList());
 
-        return new QueryResult(score(query, match), match);
+        if(match.isEmpty() ||  match.size() > 1 && match.get(0).getScore() == match.get(1).getScore()){
+            throw new NotFoundException();
+        }
+
+        return match.get(0);
 
     }
 
