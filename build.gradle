@@ -18,6 +18,7 @@ buildscript {
 		classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0')
 		classpath('org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config:2.0.0.RELEASE')
 		classpath("org.springframework.boot:spring-boot-starter-actuator:2.0.5.RELEASE")
+		classpath('org.projectlombok:lombok:1.18.2')
 	}
 
 }
@@ -26,6 +27,7 @@ plugins {
 	id "net.foragerr.jmeter" version "1.0.10-3.3"
 	id 'com.github.eerohele.saxon-gradle' version '0.6.0'
 }
+
 ext['mockito.version'] = '2.19.1'
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -53,12 +55,16 @@ ext {
 }
 
 dependencies {
+
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	implementation('org.springframework.cloud:spring-cloud-starter-config')
 	implementation("org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.6')
 	implementation('mysql:mysql-connector-java:8.0.12')
+	implementation('com.google.guava:guava:26.0-jre')
+	compileOnly('org.projectlombok:lombok:1.18.2')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('org.apache.derby:derby:10.14.2.0')
 
@@ -71,6 +77,10 @@ dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
+}
+
+bootRun {
+	jvmArgs = ["-Dspring.profiles.active=local"]
 }
 
 bootJar {

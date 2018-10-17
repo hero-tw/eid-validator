@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = EIDValidatorApplication.class)
 @ActiveProfiles("test")
@@ -31,22 +32,22 @@ public class IdentityRepositoryTest {
         Identity i = new Identity()
                 .name(
                         new Name()
-                        .givenName("Robert")
-                        .secondaryName("Thomas")
-                        .surname("Cooper")
-                        .nickname("Snake")
+                                .givenName("Robert")
+                                .secondaryName("Thomas")
+                                .surname("Cooper")
+                                .nickname("Snake")
                 );
         Identity stored = repository.persist(i);
 
         Identity read = repository.findById(stored.getId()).get();
-        assertEquals(stored.toString(), read.toString());
+        assertEquals(stored, read);
     }
 
     @Test
     public void shouldFindSimpleNameMatch(){
         Identity i = new Identity()
                 .name(new Name()
-                    .givenName("John")
+                        .givenName("John")
                         .secondaryName("David")
                         .surname("Doe")
                 );
@@ -59,18 +60,18 @@ public class IdentityRepositoryTest {
 
         List<Identity> results = repository.findMatchingValues(query);
         assertEquals(1, results.size());
-        assertEquals(i.toString(), results.get(0).toString());
+        assertEquals(i, results.get(0));
     }
 
     @Test
     public void shouldFindDOBMatch(){
         Identity i = new Identity()
-               .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 02));
+                .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 2));
 
         i = repository.persist(i);
 
         Identity query = new Identity()
-                .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 02));
+                .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 2));
 
         List<Identity> results = repository.findMatchingValues(query);
         assertEquals(1, results.size());
@@ -111,23 +112,43 @@ public class IdentityRepositoryTest {
 
         Identity query = new Identity()
                 .name(new Name()
-                    .givenName("Robert")
-                    .surname("Cooper")
+                        .givenName("Robert")
+                        .surname("Cooper")
                 )
                 .addresses(Collections.singletonList(
                         new Address()
-                        .number("984")
-                        .street("Michigan Ave NW")
-                        .cityRegion("Atlanta")
-                        .stateProvince("Georgia")
-                        .postalCode("30314")
+                                .number("984")
+                                .street("Michigan Ave NW")
+                                .cityRegion("Atlanta")
+                                .stateProvince("Georgia")
+                                .postalCode("30314")
                 ));
 
         Identity result = repository.findMatchingValues(query).get(0);
 
-        assertEquals(i.toString(), result.toString());
+        assertEquals(i, result);
 
 
+    }
+
+    @Test
+    public void shouldMergeChangesOnPersist() {
+        Identity i = new Identity()
+                .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 3));
+
+        i = repository.persist(i);
+
+        i.name(new Name().givenName("Robert").surname("Cooper"));
+
+        i = repository.persist(i);
+
+
+        Identity query = new Identity()
+                .dateOfBirth(LocalDate.of(1974, Month.OCTOBER, 3));
+
+        List<Identity> results = repository.findMatchingValues(query);
+        assertEquals(1, results.size());
+        assertEquals(i, results.get(0));
     }
 
 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,9 +12,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import lombok.Generated;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity(name="personal_identity")
+@SuppressWarnings({"unused", "WeakerAccess"})
+@Getter
+@NoArgsConstructor
+@ToString
 public class Identity {
     @Id
     @GeneratedValue(generator="system-uuid")
@@ -29,17 +36,9 @@ public class Identity {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
 
-    public String getId() {
-        return id;
-    }
-
     public Identity id(String id) {
         this.id = id;
         return this;
-    }
-
-    public Name getName() {
-        return name;
     }
 
     public Identity name(Name name) {
@@ -47,17 +46,9 @@ public class Identity {
         return this;
     }
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
     public Identity dateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         return this;
-    }
-
-    public List<StateIdentification> getStateIds() {
-        return stateIds;
     }
 
     public Identity stateIds(List<StateIdentification> stateIds) {
@@ -65,40 +56,27 @@ public class Identity {
         return this;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
     public Identity addresses(List<Address> addresses) {
         this.addresses = addresses;
         return this;
     }
 
+    @Generated
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Identity)) return false;
         Identity identity = (Identity) o;
-        return Objects.equals(id, identity.id) &&
-                Objects.equals(name, identity.name) &&
-                Objects.equals(dateOfBirth, identity.dateOfBirth) &&
-                Objects.equals(stateIds, identity.stateIds) &&
-                Objects.equals(addresses, identity.addresses);
+        return Objects.equals(getId(), identity.getId()) &&
+                Objects.equals(getName(), identity.getName()) &&
+                Objects.equals(getDateOfBirth(), identity.getDateOfBirth()) &&
+                Objects.equals(new ArrayList<>(getStateIds()), new ArrayList<>(identity.getStateIds())) &&
+                Objects.equals(new ArrayList<>(getAddresses()), new ArrayList<>(identity.getAddresses()));
     }
 
+    @Generated
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, dateOfBirth, stateIds, addresses);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Identity.class.getSimpleName() + "[", "]")
-                .add("id='" + id + "'")
-                .add("name=" + name)
-                .add("dateOfBirth=" + dateOfBirth)
-                .add("stateIds=" + stateIds)
-                .add("addresses=" + addresses)
-                .toString();
+        return Objects.hash(getId(), getName(), getDateOfBirth(), getStateIds(), getAddresses());
     }
 }

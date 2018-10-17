@@ -1,10 +1,18 @@
 package com.hero.eid.model;
 
 import java.util.Objects;
-import java.util.StringJoiner;
 import javax.persistence.Embeddable;
 
+import lombok.Generated;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Embeddable
+@SuppressWarnings({"unused", "WeakerAccess"})
+@Getter
+@ToString
+@NoArgsConstructor
 public class Name {
     private String givenName;
     private String secondaryName;
@@ -13,20 +21,9 @@ public class Name {
     private String prefix;
     private String suffix;
 
-    public Name() {
-    }
-
-    public String getGivenName() {
-        return givenName;
-    }
-
     public Name givenName(String givenName) {
         this.givenName = givenName;
         return this;
-    }
-
-    public String getSecondaryName() {
-        return secondaryName;
     }
 
     public Name secondaryName(String secondaryName) {
@@ -34,17 +31,9 @@ public class Name {
         return this;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
     public Name nickname(String nickname) {
         this.nickname = nickname;
         return this;
-    }
-
-    public String getSurname() {
-        return surname;
     }
 
     public Name surname(String surname) {
@@ -52,17 +41,9 @@ public class Name {
         return this;
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
     public Name prefix(String prefix) {
         this.prefix = prefix;
         return this;
-    }
-
-    public String getSuffix() {
-        return suffix;
     }
 
     public Name suffix(String suffix) {
@@ -70,33 +51,23 @@ public class Name {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Name.class.getSimpleName() + "[", "]")
-                .add("givenName='" + givenName + "'")
-                .add("secondaryName='" + secondaryName + "'")
-                .add("nickname='" + nickname + "'")
-                .add("surname='" + surname + "'")
-                .add("prefix='" + prefix + "'")
-                .add("suffix='" + suffix + "'")
-                .toString();
-    }
-
+    @Generated
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Name)) return false;
         Name name = (Name) o;
-        return Objects.equals(givenName, name.givenName) &&
-                Objects.equals(secondaryName, name.secondaryName) &&
-                Objects.equals(nickname, name.nickname) &&
-                Objects.equals(surname, name.surname) &&
-                Objects.equals(prefix, name.prefix) &&
-                Objects.equals(suffix, name.suffix);
+        return Objects.equals(getGivenName(), name.getGivenName()) &&
+                Objects.equals(getSecondaryName(), name.getSecondaryName()) &&
+                Objects.equals(getNickname(), name.getNickname()) &&
+                Objects.equals(getSurname(), name.getSurname()) &&
+                Objects.equals(getPrefix(), name.getPrefix()) &&
+                Objects.equals(getSuffix(), name.getSuffix());
     }
 
+    @Generated
     @Override
     public int hashCode() {
-        return Objects.hash(givenName, secondaryName, nickname, surname, prefix, suffix);
+        return Objects.hash(getGivenName(), getSecondaryName(), getNickname(), getSurname(), getPrefix(), getSuffix());
     }
 }

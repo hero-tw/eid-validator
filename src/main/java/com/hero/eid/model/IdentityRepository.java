@@ -33,13 +33,7 @@ public class IdentityRepository {
 
     @Autowired
     public IdentityRepository() {
-
     }
-
-    public IdentityRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
 
     public List<Identity> findMatchingValues(Identity inputValues){
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -69,7 +63,6 @@ public class IdentityRepository {
                                             .stream()
                                             .flatMap(address ->
                                                     Stream.of(
-
                                                             ofNullable(address.getNumber()).map(v -> builder.equal(addresses.get().get("number"), v)),
                                                             ofNullable(address.getStreet()).map(v -> builder.equal(addresses.get().get("street"), v)),
                                                             ofNullable(address.getUnit()).map(v -> builder.equal(addresses.get().get("unit"), v)),
@@ -104,15 +97,15 @@ public class IdentityRepository {
     }
 
     private Predicate[] collapse(List<Optional<Predicate>>... predicates) {
-        Predicate[] result = Stream.of(predicates)
+        return Stream.of(predicates)
                 .flatMap(Collection::stream)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toArray(Predicate[]::new);
-        return result;
 
     }
     public Identity persist(Identity identity){
+
         if(identity.getId() == null) {
             entityManager.persist(identity);
             return identity;
