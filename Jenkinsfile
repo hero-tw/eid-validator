@@ -58,6 +58,7 @@ pipeline {
     }
 
     stage('Security') {
+      steps {
         script {
             try {
                 sh './gradlew dependencyCheckUpdate dependencyCheckAnalyze'
@@ -67,6 +68,7 @@ pipeline {
                                         reportName: 'Dependency Report', keepAll: true])
             }
         }
+      }
     }
 
     stage('Performance') {
