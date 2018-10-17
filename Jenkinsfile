@@ -47,7 +47,7 @@ pipeline {
 
     stage('Dockerize') {
         steps {
-            sh 'EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW ./gradlew docker'
+            sh 'EID_DATABASE_HOST=$EID_DATABASE_HOST EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW ./gradlew docker'
         }
     }
 
