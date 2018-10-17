@@ -73,7 +73,7 @@ dependencies {
 	testImplementation('org.apache.derby:derby:10.14.2.0')
 	
 	//Transitive dependency clobbers for security updates:
-	implementation('com.google.protobuf:protobuf-java:jar:2.6.1')
+	implementation('com.google.protobuf:protobuf-java:2.6.1')
 }
 
 

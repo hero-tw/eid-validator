@@ -2,6 +2,14 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
     <suppress>
         <notes><![CDATA[
+   file name: protobuf-java-2.6.1.jar
+   ]]></notes>
+        <gav regex="true">^com\.google\.protobuf:protobuf-java:.*$</gav>
+        <cve>CVE-2015-5237</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
       file name: AppleJavaExtensions-1.4.jar
       ]]></notes>
         <gav regex="true">^com\.apple:AppleJavaExtensions:.*$</gav>
