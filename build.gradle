@@ -173,13 +173,12 @@ task spinUpJMeter() {
 	doFirst {
 
 		ProcessBuilder pb = null
-
+		File output = new File(project.buildDir, "perf.create.log")
+		File error = new File(project.buildDir, "perf.create.error.log")
 		if (!new File(project.rootDir, "etc/perf/.terraform").exists()) {
 			logger.lifecycle("Intializing terraform")
 		pb = new ProcessBuilder()
 		configureEnv(pb)
-		File output = new File(project.buildDir, "perf.create.log")
-		File error = new File(project.buildDir, "perf.create.error.log")
 		logger.lifecycle(pb.environment().toString())
 		pb.command("/usr/local/bin/terraform", "init")
 				.directory(new File(project.rootDir, "etc/perf"))
