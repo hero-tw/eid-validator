@@ -1,10 +1,6 @@
 pipeline {
   agent {
-    kubernetes {
-          label 'autoscale'
-          defaultContainer 'jnlp'
-          yamlFile 'JenkinsPod.yaml'
-        }
+      label 'autoscale'
   }
   environment {
     AWS_KEY = credentials('aws-keys')
