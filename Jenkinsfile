@@ -3,7 +3,7 @@ pipeline {
     kubernetes {
           label 'autoscale'
           defaultContainer 'jnlp'
-          yamlFile '../JenkinsPod.yaml'
+          yamlFile 'JenkinsPod.yaml'
         }
   }
   environment {
