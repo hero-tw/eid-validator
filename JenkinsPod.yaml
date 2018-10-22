@@ -5,7 +5,6 @@ spec:
   - env:
     image: jenkins/jnlp-slave
     imagePullPolicy: IfNotPresent
-    name: jnlp
     securityContext:
       privileged: false
     volumeMounts:
