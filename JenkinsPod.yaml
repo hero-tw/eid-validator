@@ -6,12 +6,12 @@ spec:
     image: jenkins/jnlp-slave
     imagePullPolicy: IfNotPresent
     name: jnlp
-    resources:
-      limits:
-        cpu: 200m
-        memory: 512Mi
-      requests:
-        cpu: 200m
-        memory: 512Mi
     securityContext:
       privileged: false
+    volumeMounts:
+    - mountPath: /home/jenkins/.gradle
+      name: jenkins-gradle-cache
+  volumes:
+  - name: jenkins-gradle-cache
+    persistentVolumeClaim:
+      claimName: jenkins-gradle-cache
