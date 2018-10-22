@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
-    resources:
+  - resources:
       limits:
         cpu: 200m
         memory: 512Mi
-      requests:
+     requests:
         cpu: 200m
         memory: 512Mi
       securityContext:
