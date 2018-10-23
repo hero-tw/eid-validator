@@ -98,7 +98,7 @@ bootJar {
 }
 
 docker {
-	name "${project.group}/${bootJar.baseName}"
+	name "124837307879.dkr.ecr.us-east-1.amazonaws.com/${project.group}/${bootJar.baseName}:"+Opt.ofNullable(System.getenv('BUILD_NUMBER')).orElse("LOCAL")
 	files new File(project.buildDir, "libs/$project.name-$project.version-boot.jar")
 	buildArgs(
 			['JAR': "$project.name-$project.version-boot.jar",
@@ -106,7 +106,7 @@ docker {
 			 'DATABASE_USER': Opt.ofNullable(System.getenv("EID_DATABASE_USER")).orElse(""),
 			 'DATABASE_PASSWORD': Opt.ofNullable(System.getenv("EID_DATABASE_PASSWORD")).orElse("")
 			])
-	tags "124837307879.dkr.ecr.us-east-1.amazonaws.com/${project.group}/${bootJar.baseName}:"+Opt.ofNullable(System.getenv('BUILD_NUMBER')).orElse("LOCAL")
+
 }
 
 

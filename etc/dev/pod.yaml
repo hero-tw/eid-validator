@@ -8,6 +8,6 @@ metadata:
   resourceVersion: "246269"
 spec:
   containers:
-  - image: "124837307879.dkr.ecr.us-east-1.amazonaws.com/com.hero/eid-validator
+  - image: "124837307879.dkr.ecr.us-east-1.amazonaws.com/com.hero/eid-validator"
     imagePullPolicy: Always
     name: "eid-validator-dev"
