@@ -21,7 +21,7 @@ pipeline {
             archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
         }
     }
-
+/*
     stage('Test') {
        steps {
            script {
@@ -42,7 +42,7 @@ pipeline {
          }
      }
     }
-
+*/
     stage('Dockerize') {
         steps {
             sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
