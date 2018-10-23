@@ -45,10 +45,7 @@ pipeline {
 */
     stage('Dockerize') {
         steps {
-            sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
-            sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
-            sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR aws configure set default.region us-east-1'
-            sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR eval $(aws ecr get-login --no-include-email)'
+            sh 'AWS_DEFAULT_REGION=us-east-1 AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR eval $(aws ecr get-login --no-include-email)'
             sh 'EID_DATABASE_HOST=$EID_DATABASE_HOST EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW ./gradlew docker dockerPush'
         }
     }
