@@ -32,7 +32,7 @@ pipeline {
                                                     reportFiles: 'index.html',
                                                     reportName: 'Unit Tests', keepAll: true])
                 publishHTML(target: [reportDir:'build/reports/findbugs',
-                                    reportFiles: 'main.html,test.html,contractTest.html',
+                                    reportFiles: 'main.html,test.html',
                                     reportName: 'FindBugs', keepAll: true])
                 publishHTML(target: [reportDir:'build/reports/jacoco/test/html',
                     reportFiles: 'index.html',
@@ -45,7 +45,7 @@ pipeline {
 
     stage('Dockerize') {
         steps {
-            sh 'EID_DATABASE_HOST=$EID_DATABASE_HOST EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW ./gradlew -Dorg.gradle.daemon=false docker'
+            sh 'EID_DATABASE_HOST=$EID_DATABASE_HOST EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW ./gradlew -Dorg.gradle.daemon=false docker dockerPush'
         }
     }
 

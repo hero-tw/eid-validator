@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: eid-validator-dev
+spec:
+  selector:
+    app: eid-validator-dev
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

@@ -106,6 +106,7 @@ docker {
 			 'DATABASE_USER': Opt.ofNullable(System.getenv("EID_DATABASE_USER")).orElse(""),
 			 'DATABASE_PASSWORD': Opt.ofNullable(System.getenv("EID_DATABASE_PASSWORD")).orElse("")
 			])
+	tags "124837307879.dkr.ecr.us-east-1.amazonaws.com/${project.group}/${bootJar.baseName}:"+Opt.ofNullable(System.getenv('BUILD_NUMBER')).orElse("LOCAL")
 }
 
 
@@ -147,12 +148,13 @@ jmeter {
 	csvLogFile = false
 	//jmUserProperties = ["hostname=blog.coop.software"]
 	jmGlobalProperties = ["hostname=blog.coop.software"]
-	jmSystemProperties = ["-Djava.rmi.server.hostname=127.0.0.1",
-						  "-Dserver.rmi.ssl.keystore.password=changeit",
-						  "-Dserver.rmi.ssl.keystore.file=$rmiKeystore",
-						  "-Dserver.rmi.ssl.truststore.file=$rmiKeystore",
+	jmSystemProperties = [
+//			"-Djava.rmi.server.hostname=127.0.0.1",
+//						  "-Dserver.rmi.ssl.keystore.password=changeit",
+//						  "-Dserver.rmi.ssl.keystore.file=$rmiKeystore",
+//						  "-Dserver.rmi.ssl.truststore.file=$rmiKeystore",
 						  "-Dlog4j2.loggerContextFactory=org.apache.logging.log4j.simple.SimpleLoggerContextFactory"]
-	remote = true
+//	remote = true
 	jmLog = new File(project.buildDir, "jmeter.log")
 }
 
