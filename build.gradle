@@ -97,6 +97,7 @@ bootJar {
 	classifier = 'boot'
 }
 
+
 docker {
 	name "124837307879.dkr.ecr.us-east-1.amazonaws.com/${project.group}/${bootJar.baseName}:"+Opt.ofNullable(System.getenv('BUILD_NUMBER')).orElse("LOCAL")
 	files new File(project.buildDir, "libs/$project.name-$project.version-boot.jar")
