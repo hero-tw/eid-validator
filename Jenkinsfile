@@ -11,13 +11,13 @@ pipeline {
     stage('Init') {
         steps {
             checkout scm
-            sh './gradlew -Dorg.gradle.daemon=false clean'
+            sh './gradlew clean'
         }
     }
 
     stage('Build') {
         steps {
-            sh './gradlew -Dorg.gradle.daemon=false bootJar'
+            sh './gradlew bootJar'
             archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
         }
     }
@@ -26,7 +26,7 @@ pipeline {
        steps {
            script {
               try {
-                sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./gradlew -Dorg.gradle.daemon=false check'
+                sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./gradlew check'
               } finally {
                 publishHTML(target: [reportDir:'build/reports/tests/test',
                                                     reportFiles: 'index.html',
@@ -49,7 +49,7 @@ pipeline {
             sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
             sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR aws configure set default.region us-east-1'
             sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR eval $(aws ecr get-login --no-include-email)'
-            sh 'EID_DATABASE_HOST=$EID_DATABASE_HOST EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW ./gradlew -Dorg.gradle.daemon=false docker dockerPush'
+            sh 'EID_DATABASE_HOST=$EID_DATABASE_HOST EID_DATABASE_USER=$EID_DATABASE_KEY_USR EID_DATABASE_PASSWORD=$EID_DATABASE_KEY_PSW ./gradlew docker dockerPush'
         }
     }
 
@@ -63,7 +63,7 @@ pipeline {
       steps {
         script {
             try {
-                sh './gradlew -Dorg.gradle.daemon=false dependencyCheckUpdate dependencyCheckAnalyze'
+                sh './gradlew dependencyCheckUpdate dependencyCheckAnalyze'
             } finally {
                 publishHTML(target: [reportDir:'build/reports/dependency-check',
                                         reportFiles: 'dependency-check-report.html',
@@ -77,7 +77,7 @@ pipeline {
            steps {
                script {
                   try {
-                    sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./gradlew -Dorg.gradle.daemon=false jmClean jmRun xslt --stacktrace'
+                    sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./gradlew jmClean jmRun xslt --stacktrace'
                   } finally {
                     def htmlFiles
                     dir('build/reports/jmeter') {
