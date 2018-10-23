@@ -90,7 +90,7 @@ dependencyCheck{
 	outputDirectory = file("$project.buildDir/reports/dependency-check")
 }
 bootRun {
-	jvmArgs = ["-Dspring.profiles.active=local"]
+	//jvmArgs = ["-Dspring.profiles.active=local"]
 }
 
 bootJar {
