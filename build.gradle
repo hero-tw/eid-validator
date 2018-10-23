@@ -62,7 +62,7 @@ dependencies {
 
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	implementation('org.springframework.cloud:spring-cloud-starter-config')
-	implementation("org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config")
+	//implementation("org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.6')
@@ -99,7 +99,7 @@ bootJar {
 
 
 docker {
-	name "124837307879.dkr.ecr.us-east-1.amazonaws.com/${project.group}/${bootJar.baseName}:"+Opt.ofNullable(System.getenv('BUILD_NUMBER')).orElse("LOCAL")
+	name "124837307879.dkr.ecr.us-east-1.amazonaws.com/${project.group}/${bootJar.baseName}"
 	files new File(project.buildDir, "libs/$project.name-$project.version-boot.jar")
 	buildArgs(
 			['JAR': "$project.name-$project.version-boot.jar",
@@ -107,6 +107,7 @@ docker {
 			 'DATABASE_USER': Opt.ofNullable(System.getenv("EID_DATABASE_USER")).orElse(""),
 			 'DATABASE_PASSWORD': Opt.ofNullable(System.getenv("EID_DATABASE_PASSWORD")).orElse("")
 			])
+	tags "latest", Opt.ofNullable(System.getenv('BUILD_NUMBER')).orElse("LOCAL")
 
 }
 
