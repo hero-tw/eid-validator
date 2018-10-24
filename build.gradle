@@ -150,6 +150,7 @@ jmeter {
 	jmSystemProperties = ["-Dlog4j2.loggerContextFactory=org.apache.logging.log4j.simple.SimpleLoggerContextFactory"]
 	jmLog = new File(project.buildDir, "jmeter.log")
 	reportXslt= file("build/jmeter-report/jmeter-results-detail-report_21.xsl")
+	reportPostfix = ""
 }
 
 task readDeployedEndpoint(type:Exec) {
