@@ -1,6 +1,16 @@
 EID Validator
 =============
 
+This project has a repository of "Identities" for a person. This includes
+name, date of birth, a list of historical addresses, a list of state issued 
+ID numbers. 
+
+After you store an identity, it allows you to query based on a partial identity
+and will give you a unique result with a score indicating confidence level of 
+a match. The lack of a clear winner, or no match, will result in a 404. See:
+
+[Insertion](./doc/examples/Insertion.MD)
+[Query](./doc/examples/Query.MD)
 
 Local Requirements
 ------------------
