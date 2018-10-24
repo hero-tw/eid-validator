@@ -1,15 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "eid-validator"
-  namespace: "dev"
+  name: eid-validator-lb
+  namespace: dev
 spec:
   selector:
-    app: "eid-validator"
-    namepsace: "dev"
+    app: eid-validator
   type: LoadBalancer
   ports:
   - name: http
-    port: 80
+    port: 8080
     targetPort: 8080
     protocol: TCP

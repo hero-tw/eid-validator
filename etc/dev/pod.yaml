@@ -1,20 +1,21 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "eid-validator"
+  name: eid-validator
+  namespace: dev
   labels:
-    app: "eid-validator"
-  namespace: "dev"
+    app: eid-validator
 spec:
   containers:
-  - image: "124837307879.dkr.ecr.us-east-1.amazonaws.com/com.hero/eid:latest"
+  - image: 124837307879.dkr.ecr.us-east-1.amazonaws.com/com.hero/eid:latest
     imagePullPolicy: Always
-    name: "eid-validator"
+    name: eid-validator
     resources:
       limits:
         memory: "1Gi"
       requests:
         memory: "1Gi"
     ports:
-      - name: springboot
+      - name: http
         containerPort: 8080
+        protocol: TCP
