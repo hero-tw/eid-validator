@@ -82,7 +82,7 @@ dependencyManagement {
 
 
 dependencyCheck{
-	suppressionFile = file("$project.rootDir/etc/dependency-check-surpression.xml")
+	suppressionFile = file("$project.rootDir/etc/security/dependency-check-surpression.xml")
 	outputDirectory = file("$project.buildDir/reports/dependency-check")
 }
 bootRun {
