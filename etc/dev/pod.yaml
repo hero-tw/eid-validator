@@ -3,18 +3,18 @@ kind: Pod
 metadata:
   generateName: "eid-validator-"
   labels:
-    run: "eid-validator-dev"
-  namespace: default
+    app: "eid-validator"
+  namespace: "dev"
 spec:
   containers:
   - image: "124837307879.dkr.ecr.us-east-1.amazonaws.com/com.hero/eid:latest"
     imagePullPolicy: Always
-    name: "eid-validator-dev"
+    name: "eid-validator"
     resources:
       limits:
         memory: "1Gi"
       requests:
         memory: "1Gi"
     ports:
-      - name: spring-boot-port
+      - name: springboot
         containerPort: 8080
