@@ -142,12 +142,14 @@ def rmiKeystore = new File(project.rootDir, "src/test/jmeter/rmi_keystore.jks").
 
 
 jmeter {
+	enableReports = true
 	jmTestFiles = [file("src/test/jmeter/perf1.jmx")]
 	//resultsLog = new File(project.buildDir, "jmeter-report/loadtest-results.xml")
-	//csvLogFile = false
+	csvLogFile = false
 	enableExtendedReports = true
 	jmSystemProperties = ["-Dlog4j2.loggerContextFactory=org.apache.logging.log4j.simple.SimpleLoggerContextFactory"]
 	jmLog = new File(project.buildDir, "jmeter.log")
+	reportXslt= file("build/jmeter-report/jmeter-results-detail-report_21.xsl")
 }
 
 task readDeployedEndpoint(type:Exec) {
@@ -169,18 +171,15 @@ task readDeployedEndpoint(type:Exec) {
 
 tasks.jmRun.dependsOn(tasks.readDeployedEndpoint)
 
-xslt {
-	stylesheet file('src/test/jmeter/template.xslt')
-
-	// Transform every .xml file in the "input" directory.
-	input fileTree(dir: new File(project.buildDir, "jmeter-report").getAbsolutePath(), include: '*.xml')
-
+task copyTemplateFiles(type:Copy) {
+	from  fileTree(dir: "$project.projectDir/etc/jmeter", include: '**/*')
+	into "${buildDir}/jmeter-report"
 }
 
 task moveXsltFiles(type:Copy) {
 	from  fileTree(dir: "$project.buildDir/jmeter-report", include: '**/*')
 	into "${buildDir}/reports/jmeter"
 }
-
+tasks.jmReport.dependsOn(tasks.copyTemplateFiles)
 tasks.jmReport.finalizedBy(tasks.moveXsltFiles)
 
