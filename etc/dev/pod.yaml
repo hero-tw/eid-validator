@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  generateName: "eid-validator-"
+  name: "eid-validator"
   labels:
     app: "eid-validator"
   namespace: "dev"
