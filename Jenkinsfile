@@ -53,7 +53,7 @@ pipeline {
 
     stage('Deploy') {
         steps {
-            sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./deploy.sh'
+            sh 'CLUSTER_NAME=$CLUSTER_NAME AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./deploy.sh'
         }
     }
 
