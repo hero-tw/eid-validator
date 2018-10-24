@@ -1,5 +1,3 @@
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import java.util.Optional as Opt
 
 buildscript {
@@ -26,7 +24,7 @@ buildscript {
 }
 
 plugins {
-	id "net.foragerr.jmeter" version "1.0.10-3.3"
+	id "net.foragerr.jmeter" version "1.1.0-4.0" // "1.0.10-3.3"
 	id 'com.github.eerohele.saxon-gradle' version '0.6.0'
 }
 
@@ -46,9 +44,6 @@ group = 'com.hero'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
-def jmeterServer = "localhost"
-def sshForward = null
-
 repositories {
 	mavenCentral()
 	jcenter()
@@ -57,6 +52,7 @@ repositories {
 ext {
 	springCloudVersion = 'Finchley.SR1'
 }
+
 
 dependencies {
 
@@ -144,22 +140,34 @@ tasks.check.finalizedBy(tasks.jacocoTestReport)
 
 def rmiKeystore = new File(project.rootDir, "src/test/jmeter/rmi_keystore.jks").getAbsolutePath()
 
+
 jmeter {
 	jmTestFiles = [file("src/test/jmeter/perf1.jmx")]
-	jmSystemPropertiesFiles = [file("src/test/jmeter/user.properties")]
 	//resultsLog = new File(project.buildDir, "jmeter-report/loadtest-results.xml")
-	csvLogFile = false
-	//jmUserProperties = ["hostname=blog.coop.software"]
-	jmGlobalProperties = ["hostname=blog.coop.software"]
-	jmSystemProperties = [
-//			"-Djava.rmi.server.hostname=127.0.0.1",
-//						  "-Dserver.rmi.ssl.keystore.password=changeit",
-//						  "-Dserver.rmi.ssl.keystore.file=$rmiKeystore",
-//						  "-Dserver.rmi.ssl.truststore.file=$rmiKeystore",
-						  "-Dlog4j2.loggerContextFactory=org.apache.logging.log4j.simple.SimpleLoggerContextFactory"]
-//	remote = true
+	//csvLogFile = false
+	enableExtendedReports = true
+	jmSystemProperties = ["-Dlog4j2.loggerContextFactory=org.apache.logging.log4j.simple.SimpleLoggerContextFactory"]
 	jmLog = new File(project.buildDir, "jmeter.log")
 }
+
+task readDeployedEndpoint(type:Exec) {
+	executable 'sh'
+	args "-c", "kubectl get service eid-validator-lb --namespace dev -o json | jq .status.loadBalancer.ingress[0].hostname | sed 's/\\\"//g'"
+
+	//store the output instead of printing to the console:
+	standardOutput = new ByteArrayOutputStream()
+
+	doLast {
+		def deployedEndpoint = standardOutput.toString()
+		logger.lifecycle("Found deployed load balancer "+deployedEndpoint)
+		project.jmeter {
+			jmUserProperties = ["hostname=$deployedEndpoint"]
+		}
+	}
+}
+
+
+tasks.jmRun.dependsOn(tasks.readDeployedEndpoint)
 
 xslt {
 	stylesheet file('src/test/jmeter/template.xslt')
@@ -170,9 +178,9 @@ xslt {
 }
 
 task moveXsltFiles(type:Copy) {
-	from  fileTree(dir: project.buildDir, include: '*.html')
+	from  fileTree(dir: "$project.buildDir/jmeter-report", include: '**/*')
 	into "${buildDir}/reports/jmeter"
 }
 
-tasks.xslt.finalizedBy(tasks.moveXsltFiles)
+tasks.jmReport.finalizedBy(tasks.moveXsltFiles)
 

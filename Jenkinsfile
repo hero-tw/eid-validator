@@ -75,7 +75,7 @@ pipeline {
            steps {
                script {
                   try {
-                    sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./gradlew jmClean jmRun xslt --stacktrace'
+                    sh 'AWS_SECRET_ACCESS_KEY=$AWS_KEY_PSW AWS_ACCESS_KEY_ID=$AWS_KEY_USR ./gradlew jmClean jmRun jmReport --stacktrace'
                   } finally {
                     def htmlFiles
                     dir('build/reports/jmeter') {
