@@ -6,6 +6,7 @@ pipeline {
     AWS_KEY = credentials('aws-keys')
     EID_DATABASE_KEY = credentials('EID_DATABASE')
     EID_DATABASE_HOST = credentials('EID_DATABASE_HOST')
+    CLUSTER_NAME = credentials("CLUSTER_NAME")
   }
   stages {
     stage('Init') {
