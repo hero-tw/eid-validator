@@ -23,6 +23,7 @@ POST /identity
         "cityRegion": "Atlanta",
         "stateProvince": "Georgia",
         "postalCode": "30312",
+        "countryCode": "US",
         "startDate": "1929-01-15",
         "endDate": "1947-06-15"
       }
