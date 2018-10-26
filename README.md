@@ -19,7 +19,7 @@ Java 8, MySQL configured with an eid database. See
 ```config/application-local.properties```  for configuration. 
 
 
-```./graldew bootRun```
+```./gradlew bootRun```
 
 Build Requirements
 ------------------
