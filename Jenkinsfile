@@ -25,7 +25,7 @@ pipeline {
 
     stage('Ecr Repository') {
         steps {
-            terraform -version
+           sh 'terraform -version'
         }
     }
 
