@@ -23,9 +23,9 @@ pipeline {
         }
     }
 
-    stage('Ecr Respository') {
+    stage('Ecr Repository') {
         steps {
-            which terraform
+            terraform -version
         }
     }
 
