@@ -23,6 +23,12 @@ pipeline {
         }
     }
 
+    stage('Ecr Respository') {
+        steps {
+            which terraform
+        }
+    }
+
     stage('Test') {
        steps {
            script {
