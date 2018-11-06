@@ -3,5 +3,5 @@ variable "aws_region" {
 }
 
 variable "repository" {
-  default = "com.hero/eid-validator"
+  default = "com.hero/eid"
 }

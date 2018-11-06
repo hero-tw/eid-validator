@@ -32,3 +32,7 @@ credentials: aws-keys
 credentials: EID_DATABASE
 secret text: EID_DATABASE_HOST
 ```
+
+Terraform State
+------------------
+Terraform state is stored in tf-eid-validator s3 bucket
