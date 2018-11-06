@@ -36,3 +36,9 @@ secret text: EID_DATABASE_HOST
 Terraform State
 ------------------
 Terraform state is stored in tf-eid-validator s3 bucket
+
+Infrastructure
+--------------
+
+An RDS Mysql 8.0 instance is created as part of the Terraform configurations.
+
