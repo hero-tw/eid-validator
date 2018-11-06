@@ -10,6 +10,10 @@ terraform {
   }
 }
 
+module  "rds" {
+  source = "./rds"
+}
+
 resource "aws_ecr_repository" "ecr_repository" {
   name = "${var.repository}"
 }
