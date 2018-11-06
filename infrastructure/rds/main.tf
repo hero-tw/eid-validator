@@ -8,6 +8,20 @@ resource "aws_default_vpc" "default" {
 
 resource "aws_default_security_group" "default" {
   vpc_id = "${aws_default_vpc.default.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self = true
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_db_instance" "eid_db" {
@@ -23,4 +37,8 @@ resource "aws_db_instance" "eid_db" {
   final_snapshot_identifier = "eid-validator-mysql-final-snapshot"
   password               = "${random_string.password.result}"
   vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
+}
+
+output "eid_db_password" {
+  value = "${aws_db_instance.eid_db.password}"
 }

@@ -21,3 +21,7 @@ resource "aws_ecr_repository" "ecr_repository" {
 output "respository_url" {
   value = "${aws_ecr_repository.ecr_repository.repository_url}"
 }
+
+output "eid_db_password" {
+  value = "${module.rds.eid_db_password}"
+}
