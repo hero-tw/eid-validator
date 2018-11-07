@@ -37,8 +37,28 @@ Terraform State
 ------------------
 Terraform state is stored in tf-eid-validator s3 bucket
 
+In order to initialize the terraform state one needs to run the following command:
+
+```terraform init```
+
 Infrastructure
 --------------
 
-An RDS Mysql 8.0 instance is created as part of the Terraform configurations.
+### General
 
+In order to create the infrastructure required by this application one needs to run the following terraform command:
+
+When testing:
+
+```EID_DB_PASSWORD=change_it; terraform apply -var 'eid_db_password=$EID_DB_PASSWORD'```
+
+In production (you'll probably want to set the env variable in your CI/CD solution):
+
+```terraform apply -var 'eid_db_password=$EID_DB_PASSWORD'```
+
+### Database
+
+An RDS Mysql 8.0 instance is created as part of the Terraform configurations.
+A database and user both named *eid* are created through the terraform scripts.
+
+### Docker Repo (ECR)

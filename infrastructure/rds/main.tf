@@ -1,8 +1,3 @@
-resource "random_string" "password" {
-  length = 16
-  special = false
-}
-
 resource "aws_default_vpc" "default" {
 }
 
@@ -35,10 +30,6 @@ resource "aws_db_instance" "eid_db" {
   port                   = "5432"
   skip_final_snapshot    = true
   final_snapshot_identifier = "eid-validator-mysql-final-snapshot"
-  password               = "${random_string.password.result}"
+  password               = "${var.eid_db_password}"
   vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
-}
-
-output "eid_db_password" {
-  value = "${aws_db_instance.eid_db.password}"
 }

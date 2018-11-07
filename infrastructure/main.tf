@@ -12,6 +12,7 @@ terraform {
 
 module  "rds" {
   source = "./rds"
+  eid_db_password = "${var.eid_db_password}"
 }
 
 resource "aws_ecr_repository" "ecr_repository" {
@@ -22,6 +23,6 @@ output "respository_url" {
   value = "${aws_ecr_repository.ecr_repository.repository_url}"
 }
 
-output "eid_db_password" {
-  value = "${module.rds.eid_db_password}"
+output "db_password" {
+  value = "${var.eid_db_password}"
 }

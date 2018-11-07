@@ -5,3 +5,5 @@ variable "aws_region" {
 variable "repository" {
   default = "com.hero/eid"
 }
+
+variable "eid_db_password" {}
