@@ -22,7 +22,3 @@ resource "aws_ecr_repository" "ecr_repository" {
 output "respository_url" {
   value = "${aws_ecr_repository.ecr_repository.repository_url}"
 }
-
-output "db_password" {
-  value = "${var.eid_db_password}"
-}
