@@ -48,13 +48,14 @@ Infrastructure
 
 In order to create the infrastructure required by this application one needs to run the following terraform command:
 
-When testing:
 
-```EID_DB_PASSWORD=change_it; terraform apply -var 'eid_db_password=$EID_DB_PASSWORD'```
+```
+export TF_VAR_eid_db_password=change_it # stores the database password in an envivonment variable
+terraform apply # creates EID infrastructure
+```
 
-In production (you'll probably want to set the env variable in your CI/CD solution):
+In production you'll probably want to set the env variable in your CI/CD solution.
 
-```terraform apply -var 'eid_db_password=$EID_DB_PASSWORD'```
 
 ### Database
 
