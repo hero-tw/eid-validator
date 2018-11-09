@@ -39,7 +39,10 @@ Terraform state is stored in tf-eid-validator s3 bucket
 
 In order to initialize the terraform state one needs to run the following command:
 
-```terraform init```
+```
+cd infrastructure
+terraform init
+```
 
 Infrastructure
 --------------
@@ -50,8 +53,9 @@ In order to create the infrastructure required by this application one needs to 
 
 
 ```
-export TF_VAR_eid_db_password=change_it # stores the database password in an envivonment variable
-terraform apply # creates EID infrastructure
+export TF_VAR_eid_db_password=change_it #stores the database password in an envivonment variable
+cd infrastructure #goes to the infrastructure folder
+terraform apply #creates EID infrastructure
 ```
 
 In production you'll probably want to set the env variable in your CI/CD solution.
