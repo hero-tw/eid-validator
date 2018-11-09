@@ -11,11 +11,8 @@ import static com.hero.eid.service.scorer.ScorerUtil.doesMatchIfPresentOrMatchIs
 public class DateOfBirthMatch implements Scorer {
     @Override
     public Optional<Score> computeScore(Identity query, Identity match) {
-        if(query.getDateOfBirth() == null){
-            return Optional.empty();
-        }
-        return doesMatchIfPresentOrMatchIsNull(query.getDateOfBirth(), match.getDateOfBirth()) ?
-                Optional.of(new Score(10, false)) : Optional.empty();
-
+        return Optional.ofNullable(query.getDateOfBirth())
+                .filter(queryDob -> doesMatchIfPresentOrMatchIsNull(queryDob, match.getDateOfBirth()))
+                .map(dob ->new Score(10, false));
     }
 }

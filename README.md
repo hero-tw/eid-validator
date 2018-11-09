@@ -9,17 +9,19 @@ After you store an identity, it allows you to query based on a partial identity
 and will give you a unique result with a score indicating confidence level of 
 a match. The lack of a clear winner, or no match, will result in a 404. See:
 
-[Insertion](./doc/examples/Insertion.md)
-[Query](./doc/examples/Query.md)
+ * [Insertion](./doc/examples/Insertion.md)
+ * [Query](./doc/examples/Query.md)
 
 Local Requirements
 ------------------
 
 Java 8, MySQL configured with an eid database. See 
-```config/application-local.properties```  for configuration. 
+```src/main/resources/config/application-local.properties```  for configuration. 
 
 
-```./gradlew bootRun```
+```
+SPRING_PROFILES_ACTIVE=local ./graldew bootRun
+```
 
 Build Requirements
 ------------------
